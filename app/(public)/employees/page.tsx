@@ -7,21 +7,20 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Employee, employees } from "@/lib/db";
+import { getEmployees } from "@/lib/api";
 
-async function getEmployees(): Promise<Employee[]> {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return employees;
-}
-//mock data 
-const EMPLOYEES = await getEmployees();
+export default async function EmployeesPage() {
+    const employees = await getEmployees();
 
-export default function EmployeesPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold">Our Team</h1>
-              {/* implement search later */}
+                <input
+                    type="search"
+                    placeholder="Search employees..."
+                    className="rounded border px-4 py-2"
+                />
             </div>
 
             <div className="rounded-md border">
@@ -36,22 +35,30 @@ export default function EmployeesPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {EMPLOYEES.map((employee) => (
-                            <TableRow key={employee.id}>
-                                <TableCell className="font-medium">{employee.firstName}</TableCell>
-                                <TableCell className="font-medium">{employee.lastName}</TableCell>
-                                <TableCell>{employee.role}</TableCell>
-                                <TableCell>{employee.department}</TableCell>
-                                <TableCell className="text-right">
-                                    <Link
-                                        href={`/employees/${employee.id}`}
-                                        className="text-blue-600 hover:underline"
-                                    >
-                                        View Profile
-                                    </Link>
+                        {employees.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={5} className="text-center h-24 text-gray-500">
+                                    No employees found.
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ) : (
+                            employees.map((employee) => (
+                                <TableRow key={employee.id}>
+                                    <TableCell>{employee.first_name}</TableCell>
+                                    <TableCell>{employee.last_name}</TableCell>
+                                    <TableCell>{employee.role}</TableCell>
+                                    <TableCell>{employee.department}</TableCell>
+                                    <TableCell>
+                                        <Link
+                                            href={`/employees/${employee.id}`}
+                                            className="text-blue-600 hover:underline"
+                                        >
+                                            View Profile
+                                        </Link>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
                     </TableBody>
                 </Table>
             </div>
