@@ -73,7 +73,7 @@ export default async function EditEmployeePage({ params }: { params: Promise<{ i
                             <Input name="bio" defaultValue={employee.bio} />
                         </div>
 
-                        <div className="pt-4 flex justify-end gap-2 p-4">
+                        <div className="mt-4 flex justify-end gap-2">
                             <Link href="/admin">
                                 <Button variant="outline">Cancel</Button>
                             </Link>

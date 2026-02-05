@@ -11,10 +11,16 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import AdminAlert from "@/components/AdminAlert";
+import Search from '@/components/Search';
 
-export default async function AdminDashboard() {
-    const employees = await getEmployees();
-    // Search params are handled by the Client Component <AdminAlert />
+export default async function AdminDashboard(props: {
+    searchParams?: Promise<{
+        search?: string;
+    }>;
+}) {
+    const searchParams = await props.searchParams;
+    const search = searchParams?.search || '';
+    const employees = await getEmployees(search);
 
     return (
         <div>
@@ -22,6 +28,9 @@ export default async function AdminDashboard() {
 
             <div className="mb-6 flex items-center justify-between">
                 <h1 className="text-2xl font-bold">Dashboard</h1>
+                <div className="w-1/3">
+                    <Search placeholder="Search employees..." />
+                </div>
                 <Link href="/admin/new" className='p-4'>
                     <Button >
                         + Add Employee
@@ -54,8 +63,8 @@ export default async function AdminDashboard() {
                                     <TableCell>{employee.last_name}</TableCell>
                                     <TableCell>{employee.role}</TableCell>
                                     <TableCell>{employee.department}</TableCell>
-                                    <TableCell className="text-right">
-                                        <div className="flex justify-end gap-2">
+                                    <TableCell >
+                                        <div className="flex gap-2">
                                             <Link href={`/admin/edit/${employee.id}`}>
                                                 <Button size="sm" variant={"ghost"} className="bg-blue-600 hover:bg-blue-700 text-white">Edit</Button>
                                             </Link>

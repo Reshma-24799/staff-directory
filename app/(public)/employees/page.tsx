@@ -9,18 +9,24 @@ import {
 } from "@/components/ui/table";
 import { getEmployees } from "@/lib/api";
 
-export default async function EmployeesPage() {
-    const employees = await getEmployees();
+import Search from "@/components/Search";
+
+export default async function EmployeesPage(props: {
+    searchParams?: Promise<{
+        search?: string;
+    }>;
+}) {
+    const searchParams = await props.searchParams;
+    const search = searchParams?.search || '';
+    const employees = await getEmployees(search);
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold">Our Team</h1>
-                <input
-                    type="search"
-                    placeholder="Search employees..."
-                    className="rounded border px-4 py-2"
-                />
+                <div className="w-1/3">
+                    <Search placeholder="Search employees..." />
+                </div>
             </div>
 
             <div className="rounded-md border">
@@ -31,13 +37,13 @@ export default async function EmployeesPage() {
                             <TableHead>Last Name</TableHead>
                             <TableHead>Role</TableHead>
                             <TableHead>Department</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {employees.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={5} className="text-center h-24 text-gray-500">
+                                <TableCell colSpan={5} className="text-center h-24">
                                     No employees found.
                                 </TableCell>
                             </TableRow>
